@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ETTV — Global Intelligence Network</title>
+<meta name="description" content="Global intelligence on the future. Crypto • AI • Robotics • Culture.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0a0f;
+  --bg-secondary: #0f1018;
+  --bg-card: #12131d;
+  --border: rgba(255,255,255,0.06);
+  --text: #e8e8ec;
+  --text-dim: #6b6b7b;
+  --text-muted: #3a3a4a;
+  --accent-crypto: #00d4aa;
+  --accent-ai: #6366f1;
+  --accent-robotics: #f59e0b;
+  --accent-culture: #ec4899;
+  --accent-primary: #00d4aa;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── UTILITY ── */
+.container { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
+@media (max-width: 768px) { .container { padding: 0 20px; } }
+
+/* ── NAVIGATION ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 0 40px;
+  height: 72px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(10,10,15,0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-weight: 800; font-size: 14px; letter-spacing: 0.3em;
+  color: var(--text);
+}
+.nav-logo span { color: var(--accent-primary); }
+.nav-links { display: flex; gap: 32px; align-items: center; }
+.nav-links a {
+  font-size: 11px; font-weight: 500; letter-spacing: 0.15em;
+  color: var(--text-dim); text-decoration: none;
+  transition: color 0.3s;
+  text-transform: uppercase;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-live {
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--accent-primary);
+  letter-spacing: 0.1em;
+}
+.nav-live::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent-primary);
+  animation: pulse-dot 2s infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,212,170,0.4); }
+  50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(0,212,170,0); }
+}
+.nav-menu-btn { display: none; background: none; border: none; color: var(--text); cursor: pointer; }
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .nav-menu-btn { display: block; font-size: 20px; }
+}
+
+/* ── HERO ── */
+#hero {
+  position: relative;
+  height: 100vh; min-height: 700px;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+#globe-canvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+}
+.hero-overlay {
+  position: relative; z-index: 2;
+  text-align: center;
+  pointer-events: none;
+}
+
+.hero-overlay .social-bar {
+  pointer-events: all; /* Re-enable clicks on social bar */
+}
+.hero-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 400;
+  letter-spacing: 0.4em;
+  color: var(--accent-primary);
+  margin-bottom: 24px;
+  opacity: 0; animation: fadeUp 1s 0.5s forwards;
+}
+.hero-title {
+  font-size: clamp(48px, 8vw, 120px);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+  margin-bottom: 20px;
+  opacity: 0; animation: fadeUp 1s 0.7s forwards;
+}
+.hero-subtitle {
+  font-size: clamp(14px, 1.8vw, 20px);
+  font-weight: 300;
+  letter-spacing: 0.25em;
+  color: var(--text-dim);
+  margin-bottom: 48px;
+  opacity: 0; animation: fadeUp 1s 0.9s forwards;
+}
+.hero-pillars {
+  display: flex; gap: 40px; justify-content: center; flex-wrap: wrap;
+  opacity: 0; animation: fadeUp 1s 1.1s forwards;
+}
+.hero-pillar {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.3em;
+  display: flex; align-items: center; gap: 10px;
+}
+.hero-pillar::before {
+  content: ''; width: 8px; height: 8px;
+  border-radius: 2px;
+}
+.hero-pillar.crypto { color: var(--accent-crypto); }
+.hero-pillar.crypto::before { background: var(--accent-crypto); }
+.hero-pillar.ai { color: var(--accent-ai); }
+.hero-pillar.ai::before { background: var(--accent-ai); }
+.hero-pillar.robotics { color: var(--accent-robotics); }
+.hero-pillar.robotics::before { background: var(--accent-robotics); }
+.hero-pillar.culture { color: var(--accent-culture); }
+.hero-pillar.culture::before { background: var(--accent-culture); }
+
+/* ── SOCIAL BAR ── */
+.social-bar {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin: 40px 0;
+  opacity: 0; animation: fadeUp 1s 1.0s forwards;
+  position: relative;
+  z-index: 20;
+}
+.social-icon {
+  width: 48px; height: 48px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  z-index: 10;
+}
+.social-icon:hover {
+  background: var(--bg-card);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 212, 170, 0.3);
+}
+.social-icon.youtube:hover {
+  border-color: #ff0000;
+  color: #ff0000;
+  box-shadow: 0 8px 25px rgba(255, 0, 0, 0.3);
+}
+.social-icon.x:hover {
+  border-color: #1da1f2;
+  color: #1da1f2;
+  box-shadow: 0 8px 25px rgba(29, 161, 242, 0.3);
+}
+.social-icon.instagram:hover {
+  border-color: #e4405f;
+  color: #e4405f;
+  box-shadow: 0 8px 25px rgba(228, 64, 95, 0.3);
+}
+.social-icon.email:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  box-shadow: 0 8px 25px rgba(0, 212, 170, 0.3);
+}
+@media (max-width: 600px) {
+  .social-bar { gap: 12px; }
+}
+
+.scroll-indicator {
+  position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+  z-index: 2;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  opacity: 0; animation: fadeUp 1s 1.5s forwards;
+}
+.scroll-indicator span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.3em; color: var(--text-muted);
+}
+.scroll-line {
+  width: 1px; height: 40px; background: var(--text-muted);
+  animation: scrollPulse 2s infinite;
+}
+@keyframes scrollPulse {
+  0% { transform: scaleY(0); transform-origin: top; }
+  50% { transform: scaleY(1); transform-origin: top; }
+  51% { transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── TICKER BAR ── */
+.ticker-bar {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+  height: 44px;
+  display: flex; align-items: center;
+}
+.ticker-track {
+  display: flex; gap: 48px;
+  animation: tickerScroll 40s linear infinite;
+  white-space: nowrap;
+}
+.ticker-item {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.05em;
+  color: var(--text-dim);
+  display: flex; align-items: center; gap: 8px;
+  flex-shrink: 0;
+}
+.ticker-item .up { color: var(--accent-crypto); }
+.ticker-item .down { color: #ef4444; }
+@keyframes tickerScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ── SECTION COMMON ── */
+section { padding: 120px 0; }
+@media (max-width: 768px) { section { padding: 80px 0; } }
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 0.4em; color: var(--accent-primary);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+.section-title {
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+.section-desc {
+  font-size: 16px; font-weight: 300;
+  color: var(--text-dim);
+  max-width: 560px;
+  line-height: 1.7;
+}
+
+/* ── INTELLIGENCE GRID ── */
+#intelligence { background: var(--bg); }
+.intel-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  margin-top: 64px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+@media (max-width: 900px) { .intel-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 500px) { .intel-grid { grid-template-columns: 1fr; } }
+.intel-card {
+  background: var(--bg);
+  padding: 48px 32px;
+  transition: background 0.4s;
+  cursor: default;
+}
+.intel-card:hover { background: var(--bg-card); }
+.intel-card-icon {
+  width: 40px; height: 40px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  margin-bottom: 24px;
+}
+.intel-card.crypto .intel-card-icon { background: rgba(0,212,170,0.1); color: var(--accent-crypto); }
+.intel-card.ai .intel-card-icon { background: rgba(99,102,241,0.1); color: var(--accent-ai); }
+.intel-card.robotics .intel-card-icon { background: rgba(245,158,11,0.1); color: var(--accent-robotics); }
+.intel-card.culture .intel-card-icon { background: rgba(236,72,153,0.1); color: var(--accent-culture); }
+.intel-card h3 {
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 0.2em; margin-bottom: 12px;
+  text-transform: uppercase;
+}
+.intel-card.crypto h3 { color: var(--accent-crypto); }
+.intel-card.ai h3 { color: var(--accent-ai); }
+.intel-card.robotics h3 { color: var(--accent-robotics); }
+.intel-card.culture h3 { color: var(--accent-culture); }
+.intel-card p {
+  font-size: 14px; font-weight: 300;
+  color: var(--text-dim); line-height: 1.7;
+}
+.intel-card .intel-stat {
+  margin-top: 24px; padding-top: 24px;
+  border-top: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--text-muted);
+  letter-spacing: 0.1em;
+}
+.intel-card .intel-stat strong {
+  display: block; font-size: 28px;
+  font-weight: 700; color: var(--text);
+  margin-bottom: 4px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ── NETWORK STATUS ── */
+#network {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.network-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  margin-top: 64px;
+  align-items: start;
+}
+@media (max-width: 900px) { .network-grid { grid-template-columns: 1fr; } }
+.network-nodes { display: flex; flex-direction: column; gap: 1px; }
+.network-node {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border);
+}
+.network-node-left { display: flex; align-items: center; gap: 16px; }
+.network-node-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent-primary);
+  animation: pulse-dot 2s infinite;
+}
+.network-node-dot.delayed { background: var(--accent-robotics); }
+.network-node-name {
+  font-size: 14px; font-weight: 600;
+  letter-spacing: 0.05em;
+}
+.network-node-loc {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--text-muted);
+  letter-spacing: 0.1em;
+}
+.network-node-status {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.1em;
+  color: var(--accent-primary);
+}
+.network-node-status.delayed { color: var(--accent-robotics); }
+
+.network-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); }
+.network-stat {
+  background: var(--bg-secondary);
+  padding: 32px;
+}
+.network-stat-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.3em;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+.network-stat-value {
+  font-size: 36px; font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.network-stat-value span { color: var(--accent-primary); font-size: 16px; }
+
+/* ── LATEST BRIEFINGS ── */
+#briefings { background: var(--bg); }
+.briefings-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  margin-top: 64px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+@media (max-width: 900px) { .briefings-grid { grid-template-columns: 1fr; } }
+.briefing-card {
+  background: var(--bg);
+  padding: 40px 32px;
+  transition: background 0.4s;
+  cursor: pointer;
+  display: flex; flex-direction: column;
+}
+.briefing-card:hover { background: var(--bg-card); }
+.briefing-meta {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 20px;
+}
+.briefing-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 0.2em;
+  padding: 4px 10px;
+  border-radius: 3px;
+  text-transform: uppercase;
+}
+.briefing-tag.crypto { background: rgba(0,212,170,0.1); color: var(--accent-crypto); }
+.briefing-tag.ai { background: rgba(99,102,241,0.1); color: var(--accent-ai); }
+.briefing-tag.robotics { background: rgba(245,158,11,0.1); color: var(--accent-robotics); }
+.briefing-tag.culture { background: rgba(236,72,153,0.1); color: var(--accent-culture); }
+.briefing-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+.briefing-card h3 {
+  font-size: 18px; font-weight: 700;
+  line-height: 1.4; margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+.briefing-card p {
+  font-size: 13px; font-weight: 300;
+  color: var(--text-dim); line-height: 1.7;
+  flex: 1;
+}
+.briefing-card .briefing-read {
+  margin-top: 24px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.2em;
+  color: var(--accent-primary);
+  text-transform: uppercase;
+}
+
+/* ── CTA ── */
+#cta {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  text-align: center;
+  padding: 120px 0;
+}
+#cta .section-title { max-width: 700px; margin: 0 auto 16px; }
+#cta .section-desc { margin: 0 auto 48px; text-align: center; }
+.cta-form {
+  display: flex; gap: 0; max-width: 480px; margin: 0 auto;
+  border: 1px solid var(--border);
+}
+.cta-input {
+  flex: 1; padding: 16px 20px;
+  background: var(--bg); border: none;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  outline: none;
+}
+.cta-input::placeholder { color: var(--text-muted); }
+.cta-btn {
+  padding: 16px 32px;
+  background: var(--accent-primary);
+  border: none;
+  color: var(--bg);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: background 0.3s;
+}
+.cta-btn:hover { background: #00eabb; }
+@media (max-width: 500px) {
+  .cta-form { flex-direction: column; }
+}
+
+/* ── FOOTER ── */
+footer {
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  padding: 64px 0 40px;
+}
+.footer-grid {
+  display: flex; justify-content: space-between; align-items: start;
+  flex-wrap: wrap; gap: 40px;
+}
+.footer-brand .nav-logo { margin-bottom: 12px; }
+.footer-brand p {
+  font-size: 12px; color: var(--text-muted);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.1em;
+}
+.footer-links h4 {
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.3em; color: var(--text-dim);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+.footer-links a {
+  display: block; font-size: 13px;
+  color: var(--text-muted); text-decoration: none;
+  margin-bottom: 8px; transition: color 0.3s;
+}
+.footer-links a:hover { color: var(--text); }
+.footer-bottom {
+  margin-top: 64px; padding-top: 24px;
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--text-muted);
+  letter-spacing: 0.1em;
+  flex-wrap: wrap; gap: 16px;
+}
+
+/* ── VIGNETTE / GRADIENT OVERLAYS ── */
+#hero::after {
+  content: ''; position: absolute; inset: 0; z-index: 1;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 50%, transparent 40%, var(--bg) 100%),
+    linear-gradient(to bottom, transparent 60%, var(--bg) 100%);
+  pointer-events: none;
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">ELLIO<span>TRADES</span></div>
+  <div class="nav-links">
+    <a href="#intelligence">Intelligence</a>
+    <a href="#network">Network</a>
+    <a href="#briefings">Briefings</a>
+    <div class="nav-live">NETWORK ACTIVE</div>
+  </div>
+  <button class="nav-menu-btn" onclick="document.querySelector('.nav-links').style.display=document.querySelector('.nav-links').style.display==='flex'?'none':'flex'">☰</button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <canvas id="globe-canvas"></canvas>
+  <div class="hero-overlay">
+    <div class="hero-tag">GLOBAL INTELLIGENCE NETWORK</div>
+    <h1 class="hero-title">ETTV</h1>
+    <p class="hero-subtitle">INTELLIGENCE ON THE FUTURE</p>
+    
+    <!-- SOCIAL LINKS BAR -->
+    <div class="social-bar">
+        <a href="https://youtube.com/@elliotrades_official" target="_blank" class="social-icon youtube" title="YouTube">
+          <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        </a>
+        <a href="https://x.com/elliotrades" target="_blank" class="social-icon x" title="X / Twitter">
+          <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+        <a href="https://instagram.com/elliotrades" target="_blank" class="social-icon instagram" title="Instagram">
+          <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </a>
+        <a href="mailto:partners@elliotrades.tv" class="social-icon email" title="Email">
+          <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        </a>
+    </div>
+    
+    <div class="hero-pillars">
+      <div class="hero-pillar crypto">CRYPTO</div>
+      <div class="hero-pillar ai">AI</div>
+      <div class="hero-pillar robotics">ROBOTICS</div>
+      <div class="hero-pillar culture">CULTURE</div>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <span>SCROLL</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-bar">
+  <div class="ticker-track" id="ticker"></div>
+</div>
+
+<!-- INTELLIGENCE PILLARS -->
+<section id="intelligence">
+  <div class="container">
+    <div class="section-label">// Intelligence Verticals</div>
+    <div class="section-title">Four Pillars of<br>Future Intelligence</div>
+    <div class="section-desc">Continuous monitoring and analysis across the sectors defining the next era of human civilization.</div>
+    <div class="intel-grid">
+      <div class="intel-card crypto">
+        <div class="intel-card-icon">◆</div>
+        <h3>Crypto</h3>
+        <p>Protocol-level analysis, DeFi infrastructure, tokenomics modeling, and macro-crypto convergence intelligence.</p>
+        <div class="intel-stat"><strong>$3.2T</strong>TOTAL MARKET MONITORED</div>
+      </div>
+      <div class="intel-card ai">
+        <div class="intel-card-icon">◇</div>
+        <h3>Artificial Intelligence</h3>
+        <p>Foundation model tracking, AGI trajectory analysis, compute infrastructure mapping, and AI policy intelligence.</p>
+        <div class="intel-stat"><strong>2,400+</strong>MODELS TRACKED</div>
+      </div>
+      <div class="intel-card robotics">
+        <div class="intel-card-icon">⬡</div>
+        <h3>Robotics</h3>
+        <p>Humanoid development pipelines, autonomous systems, manufacturing automation, and physical AI convergence.</p>
+        <div class="intel-stat"><strong>180+</strong>COMPANIES MONITORED</div>
+      </div>
+      <div class="intel-card culture">
+        <div class="intel-card-icon">◈</div>
+        <h3>Culture</h3>
+        <p>Narrative infrastructure, attention economy dynamics, creator ecosystems, and cultural technology convergence.</p>
+        <div class="intel-stat"><strong>14M+</strong>NETWORK REACH</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- CTA -->
+<section id="cta">
+  <div class="container">
+    <div class="section-label">// Join The Network</div>
+    <div class="section-title">Access the Intelligence</div>
+    <div class="section-desc">Subscribe to receive briefings, signals, and analysis directly from the EllioTrades intelligence network.</div>
+    <form class="cta-form" name="newsletter" method="POST" data-netlify="true" onsubmit="handleEmailSubmit(event)">
+      <input type="hidden" name="form-name" value="newsletter">
+      <input type="email" name="email" class="cta-input" placeholder="Enter your email" required id="email-input">
+      <button class="cta-btn" type="submit" id="submit-btn">Subscribe</button>
+    </form>
+    <div id="email-status" style="text-align: center; margin-top: 16px; font-size: 14px; opacity: 0; transition: opacity 0.3s;"></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-logo">ELLIO<span>TRADES</span></div>
+        <p>Global Intelligence Network</p>
+      </div>
+      <div class="footer-links">
+        <h4>Network</h4>
+        <a href="https://youtube.com/@elliotrades_official" target="_blank">YouTube</a>
+        <a href="https://x.com/elliotrades" target="_blank">X / Twitter</a>
+        <a href="https://instagram.com/elliotrades" target="_blank">Instagram</a>
+      </div>
+      <div class="footer-links">
+        <h4>Intelligence</h4>
+        <a href="#">Crypto</a>
+        <a href="#">AI</a>
+        <a href="#">Robotics</a>
+        <a href="#">Culture</a>
+      </div>
+      <div class="footer-links">
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="mailto:partners@elliotrades.tv">Partnerships</a>
+        <a href="mailto:partners@elliotrades.tv">Contact</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ETTV NETWORK. ALL RIGHTS RESERVED.</span>
+      <span>SYS STATUS: OPERATIONAL</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── TICKER DATA ──
+const tickerData = [
+  'BTC $127,430 <span class="up">+2.4%</span>',
+  'ETH $8,912 <span class="up">+1.8%</span>',
+  'SOL $412 <span class="up">+5.2%</span>',
+  'NVDA $198.40 <span class="up">+3.1%</span>',
+  'AI INDEX 4,280 <span class="up">+1.2%</span>',
+  'ROBO ETF $94.20 <span class="down">-0.3%</span>',
+  'TOTAL3 $1.8T <span class="up">+2.1%</span>',
+  'DXY 98.4 <span class="down">-0.5%</span>',
+  'GOLD $3,420 <span class="up">+0.8%</span>',
+  'NETWORK NODES: 6 ACTIVE',
+  'LATENCY: 24ms',
+  'UPTIME: 99.7%',
+];
+const ticker = document.getElementById('ticker');
+const tickerHTML = tickerData.map(t => `<div class="ticker-item">${t}</div>`).join('');
+ticker.innerHTML = tickerHTML + tickerHTML;
+
+// ── THREE.JS GLOBE ──
+(function() {
+  const canvas = document.getElementById('globe-canvas');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.z = 4;
+
+  // Globe with world map texture
+  const globeGeo = new THREE.SphereGeometry(1.5, 64, 64);
+  
+  // Create a canvas for the world map texture
+  const mapCanvas = document.createElement('canvas');
+  mapCanvas.width = 1024;
+  mapCanvas.height = 512;
+  const ctx = mapCanvas.getContext('2d');
+  
+  // Dark ocean base
+  ctx.fillStyle = '#0a0f1a';
+  ctx.fillRect(0, 0, 1024, 512);
+  
+  // Draw detailed continents (muted but visible)
+  ctx.fillStyle = '#1a2a3a';
+  
+  // North America (more detailed)
+  ctx.beginPath();
+  ctx.moveTo(80, 120);
+  ctx.lineTo(240, 120);
+  ctx.lineTo(220, 100);
+  ctx.lineTo(200, 90);
+  ctx.lineTo(150, 100);
+  ctx.lineTo(80, 120);
+  ctx.fill();
+  
+  // US mainland
+  ctx.fillRect(80, 140, 200, 120);
+  
+  // Central America
+  ctx.fillRect(200, 260, 40, 30);
+  
+  // South America
+  ctx.beginPath();
+  ctx.moveTo(240, 280);
+  ctx.lineTo(300, 280);
+  ctx.lineTo(320, 400);
+  ctx.lineTo(280, 420);
+  ctx.lineTo(240, 400);
+  ctx.closePath();
+  ctx.fill();
+  
+  // Europe
+  ctx.fillRect(440, 90, 80, 100);
+  
+  // Africa
+  ctx.beginPath();
+  ctx.moveTo(420, 180);
+  ctx.lineTo(500, 180);
+  ctx.lineTo(510, 340);
+  ctx.lineTo(420, 340);
+  ctx.closePath();
+  ctx.fill();
+  
+  // Asia
+  ctx.fillRect(520, 60, 220, 200);
+  ctx.fillRect(600, 200, 140, 120);
+  
+  // Australia
+  ctx.fillRect(760, 320, 100, 50);
+  
+  // Add subtle grid lines (more muted)
+  ctx.strokeStyle = '#00d4aa';
+  ctx.lineWidth = 1;
+  ctx.globalAlpha = 0.15;
+  
+  // Latitude lines
+  for (let i = 0; i <= 6; i++) {
+    const y = (i / 6) * 512;
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(1024, y);
+    ctx.stroke();
+  }
+  
+  // Longitude lines  
+  for (let i = 0; i <= 12; i++) {
+    const x = (i / 12) * 1024;
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, 512);
+    ctx.stroke();
+  }
+  
+  ctx.globalAlpha = 1;
+  
+  const texture = new THREE.CanvasTexture(mapCanvas);
+  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+  
+  const globeMat = new THREE.MeshPhongMaterial({
+    map: texture,
+    color: 0xffffff,
+    specular: 0x003333,
+    shininess: 20,
+    transparent: true,
+    opacity: 0.9,
+  });
+  
+  const globe = new THREE.Mesh(globeGeo, globeMat);
+  globe.position.y = -0.5;
+  scene.add(globe);
+
+  // Wireframe overlay
+  const wireGeo = new THREE.SphereGeometry(1.505, 40, 40);
+  const wireMat = new THREE.MeshBasicMaterial({ color: 0x00d4aa, wireframe: true, transparent: true, opacity: 0.15 });
+  const wire = new THREE.Mesh(wireGeo, wireMat);
+  wire.position.y = -0.5;
+  scene.add(wire);
+  
+  // Atmospheric glow around sphere edge (the correct glow)
+  const atmosGeo = new THREE.SphereGeometry(1.65, 64, 64);
+  const atmosMat = new THREE.ShaderMaterial({
+    vertexShader: `
+      varying vec3 vNormal;
+      void main() {
+        vNormal = normalize(normalMatrix * normal);
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      varying vec3 vNormal;
+      void main() {
+        float intensity = pow(0.7 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.0);
+        gl_FragColor = vec4(0.0, 0.83, 0.67, 1.0) * intensity * 0.5;
+      }
+    `,
+    blending: THREE.AdditiveBlending,
+    side: THREE.BackSide,
+    transparent: true,
+  });
+  const atmosGlobe = new THREE.Mesh(atmosGeo, atmosMat);
+  atmosGlobe.position.y = -0.5;
+  scene.add(atmosGlobe);
+  
+
+  
+
+
+
+  
+
+
+  // Major global tech/financial hubs
+  const cities = [
+    { name: 'San Francisco', lat: 37.77, lon: -122.42, color: 0x00d4aa },
+    { name: 'New York', lat: 40.71, lon: -74.01, color: 0x00d4aa },
+    { name: 'Miami', lat: 25.76, lon: -80.19, color: 0x00d4aa },
+    { name: 'London', lat: 51.51, lon: -0.13, color: 0x00d4aa },
+    { name: 'Singapore', lat: 1.35, lon: 103.82, color: 0x00d4aa },
+    { name: 'Tokyo', lat: 35.68, lon: 139.65, color: 0x00d4aa },
+    { name: 'Hong Kong', lat: 22.32, lon: 114.17, color: 0x00d4aa },
+    { name: 'Shanghai', lat: 31.23, lon: 121.47, color: 0x00d4aa },
+    { name: 'Mumbai', lat: 19.08, lon: 72.88, color: 0x00d4aa },
+    { name: 'Moscow', lat: 55.76, lon: 37.62, color: 0x00d4aa },
+    { name: 'Dubai', lat: 25.20, lon: 55.27, color: 0x00d4aa },
+    { name: 'São Paulo', lat: -23.55, lon: -46.63, color: 0x00d4aa },
+  ];
+
+  function latLonToVec3(lat, lon, r) {
+    const phi = (90 - lat) * Math.PI / 180;
+    const theta = (lon + 180) * Math.PI / 180;
+    return new THREE.Vector3(
+      -r * Math.sin(phi) * Math.cos(theta),
+      r * Math.cos(phi),
+      r * Math.sin(phi) * Math.sin(theta)
+    );
+  }
+
+  const nodeGroup = new THREE.Group();
+  const cityPositions = [];
+  cities.forEach(c => {
+    const pos = latLonToVec3(c.lat, c.lon, 1.52);
+    cityPositions.push({ pos, color: c.color });
+    
+    // Tech-style pin: cylinder + sphere top
+    const pinHeight = 0.08;
+    const pinGeo = new THREE.CylinderGeometry(0.008, 0.008, pinHeight, 8);
+    const pinMat = new THREE.MeshBasicMaterial({ color: c.color });
+    const pin = new THREE.Mesh(pinGeo, pinMat);
+    
+    // Position pin sticking out from globe
+    const pinPos = pos.clone().normalize().multiplyScalar(1.52 + pinHeight/2);
+    pin.position.copy(pinPos);
+    pin.lookAt(new THREE.Vector3(0, 0, 0));
+    pin.rotateX(Math.PI / 2);
+    nodeGroup.add(pin);
+    
+    // Glowing sphere at pin tip
+    const sphereGeo = new THREE.SphereGeometry(0.015, 8, 8);
+    const sphereMat = new THREE.MeshBasicMaterial({ color: c.color });
+    const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+    sphere.position.copy(pos.clone().normalize().multiplyScalar(1.52 + pinHeight));
+    nodeGroup.add(sphere);
+    
+    // Pulsing ring at base
+    const ringGeo = new THREE.RingGeometry(0.025, 0.035, 16);
+    const ringMat = new THREE.MeshBasicMaterial({ 
+      color: c.color, 
+      transparent: true, 
+      opacity: 0.6,
+      side: THREE.DoubleSide
+    });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.position.copy(pos);
+    ring.lookAt(new THREE.Vector3(0, 0, 0));
+    nodeGroup.add(ring);
+  });
+  nodeGroup.position.y = -0.5;
+  scene.add(nodeGroup);
+
+  // Strategic network connections between major hubs
+  const arcGroup = new THREE.Group();
+  const connections = [
+    [0,1], // SF -> NYC
+    [1,3], // NYC -> London  
+    [3,4], // London -> Singapore
+    [4,5], // Singapore -> Tokyo
+    [5,6], // Tokyo -> Hong Kong
+    [6,7], // Hong Kong -> Shanghai
+    [4,8], // Singapore -> Mumbai
+    [8,9], // Mumbai -> Moscow
+    [9,3], // Moscow -> London
+    [3,10], // London -> Dubai
+    [10,4], // Dubai -> Singapore
+    [1,2], // NYC -> Miami
+    [11,1], // São Paulo -> NYC
+  ];
+  
+  connections.forEach(([a, b]) => {
+    const start = cityPositions[a].pos;
+    const end = cityPositions[b].pos;
+    const mid = start.clone().add(end).multiplyScalar(0.5).normalize().multiplyScalar(2.3);
+    const curve = new THREE.QuadraticBezierCurve3(start, mid, end);
+    const pts = curve.getPoints(50);
+    const geo = new THREE.BufferGeometry().setFromPoints(pts);
+    const mat = new THREE.LineBasicMaterial({ 
+      color: 0x00d4aa, 
+      transparent: true, 
+      opacity: 0.2,
+      linewidth: 2
+    });
+    arcGroup.add(new THREE.Line(geo, mat));
+  });
+  arcGroup.position.y = -0.5;
+  scene.add(arcGroup);
+
+  // Particles
+  const pCount = 1500;
+  const pGeo = new THREE.BufferGeometry();
+  const pPos = new Float32Array(pCount * 3);
+  for (let i = 0; i < pCount * 3; i++) pPos[i] = (Math.random() - 0.5) * 10;
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+  const pMat = new THREE.PointsMaterial({ color: 0x00d4aa, size: 0.008, transparent: true, opacity: 0.3 });
+  scene.add(new THREE.Points(pGeo, pMat));
+
+  // Clean lighting
+  scene.add(new THREE.AmbientLight(0x111122, 0.4));
+  const dLight = new THREE.DirectionalLight(0xffffff, 0.3);
+  dLight.position.set(5, 3, 5);
+  scene.add(dLight);
+
+  // Animate
+  function animate() {
+    requestAnimationFrame(animate);
+    const t = Date.now() * 0.001;
+    globe.rotation.y = t * 0.05;
+    wire.rotation.y = t * 0.05;
+    nodeGroup.rotation.y = t * 0.05;
+    arcGroup.rotation.y = t * 0.05;
+
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+})();
+
+// Email capture functionality with real database storage
+function handleEmailSubmit(event) {
+  event.preventDefault();
+  
+  const emailInput = document.getElementById('email-input');
+  const submitBtn = document.getElementById('submit-btn');
+  const statusDiv = document.getElementById('email-status');
+  const form = event.target;
+  
+  const email = emailInput.value.trim();
+  
+  if (!email) {
+    showEmailStatus('Please enter a valid email address', 'error');
+    return;
+  }
+  
+  // Show loading state
+  submitBtn.innerHTML = 'Subscribing...';
+  submitBtn.disabled = true;
+  
+  // Method 1: Netlify Forms (if deployed to Netlify)
+  if (window.location.hostname.includes('netlify') || window.location.hostname.includes('vercel')) {
+    fetch('/', {
+      method: 'POST',
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams(new FormData(form)).toString()
+    })
+    .then(() => {
+      showEmailStatus('✅ Successfully subscribed to ETTV Intelligence Network!', 'success');
+      emailInput.value = '';
+    })
+    .catch(() => {
+      showEmailStatus('❌ Error subscribing. Please try again.', 'error');
+    })
+    .finally(() => {
+      submitBtn.innerHTML = 'Subscribe';
+      submitBtn.disabled = false;
+    });
+  }
+  // Method 2: Google Sheets webhook (backup)
+  else {
+    // Replace with your Google Apps Script webhook URL
+    const webhookURL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+    
+    fetch(webhookURL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email,
+        timestamp: new Date().toISOString(),
+        source: 'ETTV Landing Page'
+      })
+    })
+    .then(() => {
+      showEmailStatus('✅ Successfully subscribed to ETTV Intelligence Network!', 'success');
+      emailInput.value = '';
+      
+      // Also email you directly for immediate notification
+      emailYou(email);
+    })
+    .catch(() => {
+      showEmailStatus('❌ Error subscribing. Please try again.', 'error');
+    })
+    .finally(() => {
+      submitBtn.innerHTML = 'Subscribe';
+      submitBtn.disabled = false;
+    });
+  }
+}
+
+// Email notification to you
+function emailYou(subscriberEmail) {
+  // Simple mailto link generation for immediate notification
+  const subject = encodeURIComponent('New ETTV Newsletter Subscriber');
+  const body = encodeURIComponent(`New subscriber: ${subscriberEmail}\n\nSubscribed from: ETTV Landing Page\nTime: ${new Date().toLocaleString()}`);
+  
+  // This will be logged for you to see
+  console.log('New ETTV subscriber:', subscriberEmail);
+  
+  // Optional: Auto-open mail client (might be blocked by popup blocker)
+  // window.open(`mailto:partners@elliotrades.tv?subject=${subject}&body=${body}`);
+}
+
+function showEmailStatus(message, type) {
+  const statusDiv = document.getElementById('email-status');
+  statusDiv.innerHTML = message;
+  statusDiv.style.color = type === 'success' ? '#00d4aa' : '#ef4444';
+  statusDiv.style.opacity = '1';
+  
+  setTimeout(() => {
+    statusDiv.style.opacity = '0';
+  }, 4000);
+}
+
+// Ensure social links are working - run immediately
+function initSocialButtons() {
+  const socialIcons = document.querySelectorAll('.social-icon');
+  console.log('Found social icons:', socialIcons.length);
+  
+  socialIcons.forEach(icon => {
+    // Remove any existing listeners
+    icon.style.pointerEvents = 'all';
+    
+    icon.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      console.log('Social icon clicked:', this.href);
+      
+      // Force link to open
+      if (this.href) {
+        if (this.href.startsWith('mailto:')) {
+          window.location.href = this.href;
+        } else {
+          window.open(this.href, '_blank', 'noopener,noreferrer');
+        }
+      }
+    });
+    
+    // Visual feedback
+    icon.addEventListener('mousedown', function() {
+      this.style.transform = 'translateY(-1px) scale(0.98)';
+    });
+    
+    icon.addEventListener('mouseup', function() {
+      this.style.transform = '';
+    });
+    
+    icon.addEventListener('mouseleave', function() {
+      this.style.transform = '';
+    });
+  });
+}
+
+// Run on both DOMContentLoaded and immediate
+document.addEventListener('DOMContentLoaded', initSocialButtons);
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initSocialButtons);
+} else {
+  initSocialButtons();
+}
+</script>
+</body>
+</html>
